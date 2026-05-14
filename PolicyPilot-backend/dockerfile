@@ -1,0 +1,35 @@
+FROM ghcr.io/huggingface/text-embeddings-inference:latest
+
+# 安装依赖
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 下载模型
+RUN mkdir -p /data/models/BAAI/bge-reranker-large && \
+    for url in \
+      "https://hf-mirror.com/BAAI/bge-reranker-large/resolve/main/config.json" \
+      "https://hf-mirror.com/BAAI/bge-reranker-large/resolve/main/tokenizer.json" \
+      "https://hf-mirror.com/BAAI/bge-reranker-large/resolve/main/pytorch_model.bin"; \
+    do \
+      if [[ "$(basename $url)" == "pytorch_model.bin" ]]; then \
+          curl -L --tlsv1.2 --retry 10 --retry-delay 30 --max-time 3600 --connect-timeout 60 \
+               -C - -o "/data/models/BAAI/bge-reranker-large/$(basename $url)" "$url" || exit 1; \
+      else \
+          curl -L --tlsv1.2 --retry 5 --retry-delay 10 \
+               -o "/data/models/BAAI/bge-reranker-large/$(basename $url)" "$url" || exit 1; \
+      fi \
+    done
+
+# 环境变量配置
+ENV MODEL_NAME="BAAI/bge-reranker-large"
+ENV MODEL_PATH="/data/models/${MODEL_NAME}"
+ENV TEXT_EMBEDDINGS_INFERENCE_SERVE_PORT=11435
+
+# 服务启动命令
+CMD ["text-embeddings-launcher", \
+    "--port", "$TEXT_EMBEDDINGS_INFERENCE_SERVE_PORT", \
+    "--model-id", "$MODEL_NAME", \
+    "--model-path", "$MODEL_PATH"]
