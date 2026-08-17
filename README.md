@@ -1,6 +1,13 @@
 # PolicyPilot — 政策智能问答系统
 
-基于 **RAG（检索增强生成）** 架构的政府政策智能问答系统。用户可以用自然语言提问，系统从海量政策文档中检索相关内容，结合大语言模型生成带有来源引用的准确回答。
+[![TypeScript](https://img.shields.io/badge/TypeScript-React-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![RAG](https://img.shields.io/badge/RAG-Milvus%20%2B%20Ollama-orange)](#系统架构)
+[![LLM](https://img.shields.io/badge/LLM-DeepSeek--R1-1E293B)](#技术栈)
+
+基于 **RAG（检索增强生成）** 的政府政策智能问答系统：自然语言提问 → 向量 + 关键词混合检索 → 重排序 → 大模型作答，并附上**可点击的政策来源**。
+
+适合作为「本地可跑的 RAG 全栈作品」：前后端分离、JWT 会话、Milvus 向量库、Ollama 本地模型，一条链路讲清楚检索与生成如何协作。
 
 ## ✨ 功能特性
 
