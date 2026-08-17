@@ -1,20 +1,27 @@
 const { MilvusClient } = require('@zilliz/milvus2-sdk-node');
 const util = require('util');
+require('dotenv').config();
 
-// 配置信息
-const MILVUS_HOST = "localhost";
-const MILVUS_PORT = "19530";
-const DB_NAME = "govpolicy";
-const COLLECTION_NAME = "govpolicy";
-const VECTOR_FIELD = "embedding";
+// 配置信息（全部来自环境变量，勿在仓库中硬编码主机地址）
+const MILVUS_HOST = process.env.MILVUS_HOST || 'localhost';
+const MILVUS_PORT = process.env.MILVUS_PORT || '19530';
+const DB_NAME = process.env.MILVUS_DB || process.env.DB_NAME || 'govpolicy';
+const COLLECTION_NAME = process.env.MILVUS_COLLECTION || 'govpolicy';
+const VECTOR_FIELD = 'embedding';
 const SEARCH_PARAMS = {
-  anns_field: "embedding",
-  metric_type: "IP",
+  anns_field: 'embedding',
+  metric_type: 'IP',
   params: {
     nprobe: 32,
     radius: 0.8
   }
 };
+
+if (!process.env.MILVUS_HOST) {
+  console.warn(
+    '[test.js] MILVUS_HOST 未设置，默认使用 localhost。请在 PolicyPilot-backend/.env 中配置真实地址。'
+  );
+}
 
 // 自定义日志函数
 function logger() {
